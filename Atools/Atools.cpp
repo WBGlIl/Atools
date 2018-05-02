@@ -203,7 +203,7 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 	else if (strcmp(argv[1],"-d")==0){
-		if((argv[2]=NULL)==true){
+		if((argv[2]==NULL)==true){
 			printf("Please enter url");
 			exit(1);
 		}
@@ -214,11 +214,11 @@ int main(int argc, char* argv[])
 
 	else if(strcmp(argv[1],"-u")==0)
 	{
-		if((argv[2]=NULL)==true){
+		if((argv[2]==NULL)==true){
 			printf("Please enter user");
 			exit(1);
 		}
-		else if((argv[3]=NULL)==true){
+		else if((argv[3]==NULL)==true){
 			printf("Please enter pass");
 			exit(1);
 		}
@@ -230,7 +230,7 @@ int main(int argc, char* argv[])
 
 	else if(strcmp(argv[1], "-s")==0)
 	{
-		if((argv[2]=NULL)==true){
+		if((argv[2]==NULL)==true){
 			printf("Please enter user");
 			exit(1);
 		}
@@ -240,11 +240,11 @@ int main(int argc, char* argv[])
 
 	else if(strcmp(argv[1],"-r")==0)
 	{
-		if((argv[2]=NULL)==true){
+		if((argv[2]==NULL)==true){
 			printf("Please enter ip");
 			exit(1);
 		}
-		else if((argv[3]=NULL)==true){
+		else if((argv[3]==NULL)==true){
 			printf("Please enter port");
 			exit(1);
 		}

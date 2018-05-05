@@ -1,0 +1,28 @@
+﻿  Atools.cpp
+Atools.cpp : warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+Atools.cpp(66): warning C4996: 'gethostbyname': Use getaddrinfo() or GetAddrInfoW() instead or define _WINSOCK_DEPRECATED_NO_WARNINGS to disable deprecated API warnings
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\um\WinSock2.h(2214): note: 参见“gethostbyname”的声明
+Atools.cpp(106): warning C4309: “=”: 截断常量值
+Atools.cpp(146): warning C4474: printf: 格式字符串中传递的参数太多
+  Atools.cpp(146): note: 占位符和其参数预计 0 可变参数，但提供的却是 1 参数
+Atools.cpp(153): warning C4996: 'mbstowcs': This function or variable may be unsafe. Consider using mbstowcs_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdlib.h(920): note: 参见“mbstowcs”的声明
+Atools.cpp(183): warning C4996: 'wcscpy': This function or variable may be unsafe. Consider using wcscpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\corecrt_wstring.h(121): note: 参见“wcscpy”的声明
+Atools.cpp(191): warning C4477: “printf”: 格式字符串“%s”需要类型“char *”的参数，但可变参数 1 拥有了类型“wchar_t *”
+  Atools.cpp(191): note: 请考虑在格式字符串中使用“%ls”
+  Atools.cpp(191): note: 请考虑在格式字符串中使用“%lls”
+  Atools.cpp(191): note: 请考虑在格式字符串中使用“%Ls”
+  Atools.cpp(191): note: 请考虑在格式字符串中使用“%ws”
+Atools.cpp(211): warning C4473: “printf”: 没有为格式字符串传递足够的参数
+  Atools.cpp(211): note: 占位符和其参数预计 1 可变参数，但提供的却是 0 参数
+  Atools.cpp(211): note: 缺失的可变参数 1 为格式字符串“%s”所需
+Atools.cpp(226): warning C4474: printf: 格式字符串中传递的参数太多
+  Atools.cpp(226): note: 占位符和其参数预计 1 可变参数，但提供的却是 2 参数
+  正在生成代码
+  1 of 17 functions ( 5.9%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    4 functions had inline decision re-evaluated but remain unchanged
+  已完成代码的生成
+  Atools.vcxproj -> F:\www\Atools\Release\Atools.exe
+  Atools.vcxproj -> F:\www\Atools\Release\Atools.pdb (Full PDB)

